@@ -2,7 +2,6 @@
 	heap
 	This question requires you to implement a binary heap function
 */
-// I AM NOT DONE
 
 use std::cmp::Ord;
 use std::default::Default;
@@ -38,6 +37,18 @@ where
 
     pub fn add(&mut self, value: T) {
         //TODO
+        self.count += 1;
+        self.items.push(value);
+        self.heapify_up(self.count);
+    }
+
+    fn heapify_up(&mut self, idx: usize) {
+        let mut current_idx = idx;
+        while current_idx > 1 && (self.comparator)(&self.items[current_idx], &self.items[self.parent_idx(current_idx)]) {
+            let parent_idx = self.parent_idx(current_idx);
+            self.items.swap(current_idx, parent_idx);
+            current_idx = parent_idx;
+        }
     }
 
     fn parent_idx(&self, idx: usize) -> usize {
@@ -58,7 +69,33 @@ where
 
     fn smallest_child_idx(&self, idx: usize) -> usize {
         //TODO
-		0
+        let left_idx = self.left_child_idx(idx);
+        let right_idx = self.right_child_idx(idx);
+
+        if left_idx > self.count {
+            0 // No children
+        } else if right_idx > self.count {
+            left_idx // Only left child
+        } else {
+            if (self.comparator)(&self.items[left_idx], &self.items[right_idx]) {
+                left_idx
+            } else {
+                right_idx
+            }
+        }
+    }
+
+    fn heapify_down(&mut self, idx: usize) {
+        let mut current_idx = idx;
+        while self.children_present(current_idx) {
+            let smallest_child_idx = self.smallest_child_idx(current_idx);
+            if smallest_child_idx > 0 && (self.comparator)(&self.items[smallest_child_idx], &self.items[current_idx]) {
+                self.items.swap(current_idx, smallest_child_idx);
+                current_idx = smallest_child_idx;
+            } else {
+                break;
+            }
+        }
     }
 }
 
@@ -85,7 +122,18 @@ where
 
     fn next(&mut self) -> Option<T> {
         //TODO
-		None
+		if self.is_empty() {
+            return None;
+        }
+        if self.count == 1 {
+            self.count -= 1;
+            return self.items.pop();
+        }
+
+        let root = self.items.swap_remove(1); // Swap root with the last element and remove
+        self.count -= 1;
+        self.heapify_down(1);
+        Some(root)
     }
 }
 
