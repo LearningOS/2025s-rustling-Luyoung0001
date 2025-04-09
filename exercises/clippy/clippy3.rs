@@ -9,13 +9,13 @@
 fn main() {
     let my_option: Option<()> = None;
     if my_option.is_none() {
-        panic!("Attempted to unwrap None");
+        // panic!("Attempted to unwrap None");
     }
-
     let my_arr = &[
         -1, -2, -3,
         -4, -5, -6
     ];
+
     println!("My array! Here it is: {:?}", my_arr);
 
     let mut my_empty_vec = vec![1, 2, 3, 4, 5];
